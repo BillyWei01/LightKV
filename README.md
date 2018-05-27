@@ -1,10 +1,10 @@
-## LightKV
+# LightKV
 LightKV is a Lightweight key-value storage component based on Android platform.
 
-LightK has two subclass: SyncKV & AsyncKV
+LightK has two subclass: SyncKV & AsyncKV, <br/>
 Both of thier API similar to SharePreferences（AsyncKV no need to commit).
 
-## EXAMPLE
+# EXAMPLE
 ```java
 public class AppData {
     private static final SyncKV DATA =
@@ -58,7 +58,8 @@ public class AppData {
 }
 ```
 
+# MORE
+see https://www.jianshu.com/p/37992580f3d5
 
-
-## License
-See the [LICENSE](LICENSE.MD) file for license rights and limitations.
+# License
+See the [LICENSE](LICENSE.md) file for license rights and limitations.
