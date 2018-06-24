@@ -1,4 +1,6 @@
 # LightKV
+![Bintray](https://img.shields.io/bintray/v/horizon757/maven/LightKV.svg)
+
 LightKV is a Lightweight key-value storage component based on Android platform.
 
 [SharedPreferences](https://developer.android.com/reference/android/content/SharedPreferences) is a convenient way to save key-value,
@@ -32,6 +34,16 @@ AsyncKV use mmap open mode, so it's slower when loading, but is much faster when
 SyncKV and SharePreferences-commit need to flush data to disk every commit, so they use more time in whole test case. <br/>
 SyncKV is faster comparing with SharePreferences-commit.
 
+# Download
+```gradle
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation 'com.horizon.lightkv:lightkv:1.0.1'
+}
+```
 
 # EXAMPLE
 ### Define
@@ -92,8 +104,8 @@ public class AppData {
 ```
 ### Use case
 ```kotlin
-val showTime = AppData.getInt(AppData.Keys.SHOW_COUNT)
-AppData.putInt(AppData.Keys.SHOW_COUNT, showTime + 1)
+val showCount = AppData.getInt(AppData.Keys.SHOW_COUNT)
+AppData.putInt(AppData.Keys.SHOW_COUNT, showCount + 1)
 ```
 
 # MORE
