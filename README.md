@@ -1,11 +1,42 @@
 # LightKV
 LightKV is a Lightweight key-value storage component based on Android platform.
 
-LightK has two subclass: SyncKV & AsyncKV, <br/>
+[SharedPreferences](https://developer.android.com/reference/android/content/SharedPreferences) is a convenient way to save key-value,
+but it's no very efficient.
+
+So we make this LightKV, to make saving data faster.
+
+
+LightKV has two modes: SyncKV & AsyncKV, <br/>
 Both of thier API similar to SharePreferences（AsyncKV no need to commit).
+SyncKV submits data atomic (need to commit after updating data, whick like SharePreferences-commit mode);
+AsyncKV faster, cause it will auto commit the update by system.
+
+# Benchmark
+We make a simple test case (you can see the code in project) to test their loading speed and writing speed.
+
+mode |loading time(ms）
+--|--
+AsyncKV | 10.46
+SyncKV | 1.56
+SharePreferences | 4.99
+
+mode|writing time(ms）
+--|--
+AsyncKV | 2.25
+SyncKV | 75.34
+SharePreferences-apply | 6.90
+SharePreferences-commit | 279.14
+
+AsyncKV use mmap open mode, so it's slower when loading, but is much faster when writing. <br/>
+SyncKV and SharePreferences-commit need to flush data to disk every commit, so they use more time in whole test case. <br/>
+SyncKV is faster comparing with SharePreferences-commit.
+
 
 # EXAMPLE
+### Define
 ```java
+
 public class AppData {
     private static final SyncKV DATA =
             new LightKV.Builder(GlobalConfig.getAppContext(), "app_data")
@@ -56,9 +87,17 @@ public class AppData {
         DATA.commit();
     }
 }
+
+
+```
+### Use case
+```kotlin
+val showTime = AppData.getInt(AppData.Keys.SHOW_COUNT)
+AppData.putInt(AppData.Keys.SHOW_COUNT, showTime + 1)
 ```
 
 # MORE
+LightKV has more feature, for more infomation, 
 see https://www.jianshu.com/p/37992580f3d5
 
 # License
