@@ -10,9 +10,9 @@ So we make this LightKV, to make saving data faster.
 
 
 LightKV has two modes: SyncKV & AsyncKV, <br/>
-Both of thier API similar to SharePreferences（AsyncKV no need to commit).
-SyncKV submits data atomic (need to commit after updating data, whick like SharePreferences-commit mode);
-AsyncKV faster, cause it will auto commit the update by system.
+Both of thier API similar to SharePreferences（AsyncKV is unnecessary to commit).  <br/>
+SyncKV submits data atomic (need to commit after updating data, whick like SharePreferences-commit mode); <br/>
+AsyncKV is faster, it will auto flush data to disk by system. <br/>
 
 # Benchmark
 We make a simple test case (you can see the code in project) to test their loading speed and writing speed.
