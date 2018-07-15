@@ -3,10 +3,18 @@ package com.horizon.lightkv;
 
 import android.util.SparseArray;
 
+import com.horizon.lightkv.Container.ArrayContainer;
+import com.horizon.lightkv.Container.BaseContainer;
+import com.horizon.lightkv.Container.BooleanContainer;
+import com.horizon.lightkv.Container.DoubleContainer;
+import com.horizon.lightkv.Container.FloatContainer;
+import com.horizon.lightkv.Container.IntContainer;
+import com.horizon.lightkv.Container.LongContainer;
+import com.horizon.lightkv.Container.StringContainer;
+
 import java.nio.ByteBuffer;
 
 class Parser {
-
     static int parseData(SparseArray<Object> data, ByteBuffer buffer, SparseArray keyArray, AsyncKV.Encoder encoder) {
         int invalidBytes = 0;
         boolean checkKeyExist = keyArray != null && keyArray.size() > 0;
@@ -33,7 +41,7 @@ class Parser {
                         byte[] bytes = new byte[length];
                         buffer.get(bytes);
                         byte[] value = (key & DataType.ENCODE) != 0 ? encoder.decode(bytes) : bytes;
-                        data.put(key, new StringContainer(offset, new String(value),  bytes));
+                        data.put(key, new StringContainer(offset, new String(value), bytes));
                     } else {
                         buffer.position(buffer.position() + length);
                         invalidBytes += 8 + length;
@@ -77,7 +85,7 @@ class Parser {
                         byte[] bytes = new byte[arrayLen];
                         buffer.get(bytes);
                         byte[] value = (key & DataType.ENCODE) != 0 ? encoder.decode(bytes) : bytes;
-                        data.put(key, new ArrayContainer(offset, value,  bytes));
+                        data.put(key, new ArrayContainer(offset, value, bytes));
                     } else {
                         buffer.position(buffer.position() + arrayLen);
                         invalidBytes += 8 + arrayLen;
@@ -144,7 +152,7 @@ class Parser {
         sb.append(fileName).append("'s data");
 
         if (keyArray == null || keyArray.size() <= 0) {
-            return sb.append(" is empty.").toString();
+            return sb.append(" can't visualization.").toString();
         } else {
             sb.append(":\n");
         }

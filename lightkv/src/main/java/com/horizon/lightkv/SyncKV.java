@@ -1,6 +1,15 @@
 package com.horizon.lightkv;
 
 
+import com.horizon.lightkv.Container.ArrayContainer;
+import com.horizon.lightkv.Container.BaseContainer;
+import com.horizon.lightkv.Container.BooleanContainer;
+import com.horizon.lightkv.Container.DoubleContainer;
+import com.horizon.lightkv.Container.FloatContainer;
+import com.horizon.lightkv.Container.IntContainer;
+import com.horizon.lightkv.Container.LongContainer;
+import com.horizon.lightkv.Container.StringContainer;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -28,8 +37,8 @@ public class SyncKV extends LightKV {
 
     @Override
     protected ByteBuffer loadData(String path) throws IOException {
-        File aFile = new File(path, mFileName + ".a");
-        File bFile = new File(path, mFileName + ".b");
+        File aFile = new File(path, mFileName + ".kva");
+        File bFile = new File(path, mFileName + ".kvb");
         if (!Utils.existFile(aFile) || !Utils.existFile(bFile)) {
             throw new IllegalStateException("can not open file:" + mFileName);
         }
