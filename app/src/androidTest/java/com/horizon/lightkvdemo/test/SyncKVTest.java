@@ -5,10 +5,11 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.horizon.lightkv.SyncKV;
 import com.horizon.lightkv.DataType;
-import com.horizon.lightkvdemo.util.SyncData;
+import com.horizon.lightkv.SyncKV;
 import com.horizon.lightkvdemo.util.Keys;
+import com.horizon.lightkvdemo.util.SyncData;
+import com.horizon.lightkvdemo.util.SyncDataB;
 import com.horizon.lightkvdemo.util.Utils;
 
 import java.lang.reflect.Field;
@@ -28,6 +29,7 @@ public class SyncKVTest extends BaseTestCase {
         }
 
         SparseArray<Object> data = testWriteAndRead(keys);
+        testCopy(keys, data);
         testConcurrentModify(keys, data);
         testTransaction(keys, data);
     }
@@ -84,6 +86,13 @@ public class SyncKVTest extends BaseTestCase {
         testRead(keys, data);
 
         return data;
+    }
+
+    private void testCopy(int[] keys, SparseArray data){
+        SyncKV kva = SyncData.newInstance().data();
+        SyncKV kvb = SyncDataB.newInstance().data();
+        kvb.copy(kva);
+        compare(keys, data, SyncDataB.newInstance().data());
     }
 
     private void testRead(int[] keys, SparseArray data) {

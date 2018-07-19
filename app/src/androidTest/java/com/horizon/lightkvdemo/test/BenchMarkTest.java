@@ -56,7 +56,7 @@ public class BenchMarkTest extends BaseTestCase {
         SyncKV syncKV = SyncData.newInstance().data();
         syncKV.getBoolean(Keys.B1);
         long t3 = System.nanoTime();
-        SharedPreferences sp = GlobalConfig.getAppContext().getSharedPreferences("test_sp", Context.MODE_PRIVATE);
+        SharedPreferences sp = GlobalConfig.INSTANCE.getAppContext().getSharedPreferences("test_sp", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         sp.getBoolean(Integer.toString(Keys.B1), false);
         long t4 = System.nanoTime();

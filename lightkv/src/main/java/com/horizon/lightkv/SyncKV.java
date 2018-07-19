@@ -1,6 +1,8 @@
 package com.horizon.lightkv;
 
 
+import android.util.SparseArray;
+
 import com.horizon.lightkv.Container.ArrayContainer;
 import com.horizon.lightkv.Container.BaseContainer;
 import com.horizon.lightkv.Container.BooleanContainer;
@@ -24,15 +26,11 @@ public class SyncKV extends LightKV {
     private FileChannel mAChannel;
     private FileChannel mBChannel;
     private ByteBuffer mBuffer;
-    private boolean invalid = false;
+    protected boolean invalid = false;
 
-    SyncKV(String path,
-           String name,
-           Class keyDefineClass,
-           Executor executor,
-           Logger logger,
-           Encoder encoder) {
-        super(path, name, keyDefineClass, executor, logger, encoder);
+    SyncKV(String path, String name, Class keyDefineClass,
+           Executor executor, Logger logger, Encoder encoder) {
+        super(path, name, keyDefineClass, executor, logger, encoder, SYNC_MODE);
     }
 
     @Override
@@ -111,6 +109,7 @@ public class SyncKV extends LightKV {
         return hash == digest;
     }
 
+    @Override
     public synchronized void putBoolean(int key, boolean value) {
         BooleanContainer container = (BooleanContainer) mData.get(key);
         if (container == null) {
@@ -123,6 +122,7 @@ public class SyncKV extends LightKV {
         }
     }
 
+    @Override
     public synchronized void putInt(int key, int value) {
         IntContainer container = (IntContainer) mData.get(key);
         if (container == null) {
@@ -135,6 +135,7 @@ public class SyncKV extends LightKV {
         }
     }
 
+    @Override
     public synchronized void putFloat(int key, float value) {
         FloatContainer container = (FloatContainer) mData.get(key);
         if (container == null) {
@@ -147,6 +148,7 @@ public class SyncKV extends LightKV {
         }
     }
 
+    @Override
     public synchronized void putLong(int key, long value) {
         LongContainer container = (LongContainer) mData.get(key);
         if (container == null) {
@@ -159,6 +161,7 @@ public class SyncKV extends LightKV {
         }
     }
 
+    @Override
     public synchronized void putDouble(int key, double value) {
         DoubleContainer container = (DoubleContainer) mData.get(key);
         if (container == null) {
@@ -177,6 +180,7 @@ public class SyncKV extends LightKV {
      * @param key   key
      * @param value should not be null normally, it will be dealt with remove if value is null
      */
+    @Override
     public synchronized void putString(int key, String value) {
         if (value == null) {
             remove(key);
@@ -205,6 +209,7 @@ public class SyncKV extends LightKV {
      * @param key   key
      * @param value should not be null normally, it will be dealt with remove if value is null
      */
+    @Override
     public synchronized void putArray(int key, byte[] value) {
         if (value == null) {
             remove(key);
@@ -225,6 +230,7 @@ public class SyncKV extends LightKV {
         }
     }
 
+    @Override
     public synchronized void remove(int key) {
         invalid = true;
         int index = mData.indexOfKey(key);
@@ -235,6 +241,7 @@ public class SyncKV extends LightKV {
         }
     }
 
+    @Override
     public synchronized void clear() {
         if (mData.size() > 0) {
             invalid = true;
@@ -243,6 +250,30 @@ public class SyncKV extends LightKV {
         }
     }
 
+    public synchronized void copy(final LightKV other) {
+        if (other == null || this.mMode != other.mMode) {
+            return;
+        }
+        if (mData.size() > 0) {
+            mData.clear();
+        }
+        invalid = true;
+
+        //noinspection SynchronizationOnLocalVariableOrMethodParameter
+        synchronized (other) {
+            mDataEnd = other.mDataEnd;
+
+            SparseArray<Object> data = other.mData;
+            int n = data.size();
+            for (int i = 0; i < n; i++) {
+                mData.put(data.keyAt(i), data.valueAt(i));
+            }
+        }
+
+        commit();
+    }
+
+    @Override
     public synchronized void commit() {
         if (!invalid) {
             return;
@@ -251,6 +282,8 @@ public class SyncKV extends LightKV {
             if (mData.size() == 0) {
                 mAChannel.truncate(0);
                 mBChannel.truncate(0);
+                mAChannel.force(false);
+                mBChannel.force(false);
                 invalid = false;
                 return;
             }

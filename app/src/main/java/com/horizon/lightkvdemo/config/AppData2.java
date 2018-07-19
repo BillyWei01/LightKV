@@ -3,32 +3,23 @@ package com.horizon.lightkvdemo.config;
 
 import android.os.AsyncTask;
 
-import com.horizon.lightkv.DataType;
 import com.horizon.lightkv.LightKV;
-import com.horizon.lightkv.SyncKV;
+import com.horizon.lightkvdemo.util.GzipEncoder;
 import com.horizon.lightkvdemo.util.AppLogger;
-import com.horizon.lightkvdemo.util.ConfuseEncoder;
 
-public class AppData {
-    private static final SyncKV DATA =
-            new LightKV.Builder(GlobalConfig.getAppContext(), "app_data")
-                    .logger(AppLogger.getInstance())
+/**
+ * Fava version, for compare
+ */
+public class AppData2 {
+    private static final LightKV DATA =
+            new LightKV.Builder(GlobalConfig.INSTANCE.getAppContext(), "app_data_2")
+                    .logger(AppLogger.INSTANCE)
                     .executor(AsyncTask.THREAD_POOL_EXECUTOR)
                     .keys(Keys.class)
-                    .encoder(new ConfuseEncoder())
-                    .sync();
+                    .encoder(GzipEncoder.INSTANCE)
+                    .async();
 
-    // keys define
-    public interface Keys {
-        int SHOW_COUNT = 1 | DataType.INT;
-
-        int ACCOUNT = 1 | DataType.STRING | DataType.ENCODE;
-        int TOKEN = 2 | DataType.STRING | DataType.ENCODE;
-
-        int SECRET = 1 | DataType.ARRAY | DataType.ENCODE;
-    }
-
-    public static SyncKV data() {
+    public static LightKV data() {
         return DATA;
     }
 
@@ -38,7 +29,6 @@ public class AppData {
 
     public static void putString(int key, String value) {
         DATA.putString(key, value);
-        DATA.commit();
     }
 
     public static byte[] getArray(int key) {
@@ -47,7 +37,6 @@ public class AppData {
 
     public static void putArray(int key, byte[] value) {
         DATA.putArray(key, value);
-        DATA.commit();
     }
 
     public static int getInt(int key) {
@@ -56,6 +45,5 @@ public class AppData {
 
     public static void putInt(int key, int value) {
         DATA.putInt(key, value);
-        DATA.commit();
     }
 }

@@ -7,9 +7,9 @@ import com.horizon.lightkvdemo.config.GlobalConfig
 
 internal object AppIntiHelper {
     fun inti(context: Context) {
-        GlobalConfig.setAppContext(context)
+        GlobalConfig.appContext = context
 
         // just trigger loading
-        AppData.data()
+        AppData.data
     }
 }

@@ -16,32 +16,29 @@ class MainActivity : BaseActivity() {
 
         printShowTime()
 
-        val account = AppData.getString(AppData.Keys.ACCOUNT)
-        Log.d(TAG, "account:" + account)
-
-        if(TextUtils.isEmpty(account)){
-            AppData.putString(AppData.Keys.ACCOUNT, "foo@gmail.com")
+        val account = AppData.account
+        Log.d(TAG, "account:$account")
+        if (TextUtils.isEmpty(account)) {
+            AppData.account = "foo@gmail.com"
         }
 
-        val token = AppData.getString(AppData.Keys.TOKEN)
-        Log.d(TAG, "token:" + token)
-
-        if(TextUtils.isEmpty(token)){
-            AppData.putString(AppData.Keys.TOKEN, "f5f5f5f5")
+        val token = AppData.token
+        Log.d(TAG, "token:$token")
+        if (TextUtils.isEmpty(token)) {
+            AppData.token = "f5f5f5f5"
         }
 
-        val secret = AppData.getArray(AppData.Keys.SECRET)
-        if(secret != null){
+        val secret = AppData.secret
+        if (secret.isNotEmpty()) {
             Log.d(TAG, "secret:" + String(secret))
-        }else{
-            AppData.putArray(AppData.Keys.SECRET, "I love you baby".toByteArray())
+        } else {
+            AppData.secret = "I love you baby".toByteArray()
         }
     }
 
     private fun printShowTime() {
-        val showTime = AppData.getInt(AppData.Keys.SHOW_COUNT) + 1
-        helloTv.text = getString(R.string.main_tips, showTime, AppData.data().toString())
-        Log.d(TAG, AppData.data().toString());
-        AppData.putInt(AppData.Keys.SHOW_COUNT, showTime)
+        val showCount = AppData.showCount
+        helloTv.text = getString(R.string.main_tips, showCount + 1, AppData.data.toString())
+        AppData.showCount = showCount + 1
     }
 }

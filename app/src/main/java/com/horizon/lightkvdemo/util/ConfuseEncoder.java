@@ -5,6 +5,7 @@ import com.horizon.lightkv.LightKV;
 
 import java.util.Random;
 
+
 public class ConfuseEncoder implements LightKV.Encoder {
     private static final Random RANDOM = new Random();
 

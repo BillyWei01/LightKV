@@ -8,6 +8,7 @@ import android.util.SparseArray;
 import com.horizon.lightkv.AsyncKV;
 import com.horizon.lightkv.DataType;
 import com.horizon.lightkvdemo.util.AsyncData;
+import com.horizon.lightkvdemo.util.AsyncDataB;
 import com.horizon.lightkvdemo.util.Keys;
 import com.horizon.lightkvdemo.util.Utils;
 
@@ -28,12 +29,13 @@ public class AsyncKVTest extends BaseTestCase {
         }
 
         SparseArray<Object> data = testWriteAndRead(keys);
+        testCopy(keys, data);
         testConcurrentModify(keys, data);
         testTransaction(keys, data);
         testGC(keys, data);
     }
 
-    private SparseArray<Object> testWriteAndRead(int[] keys) throws InterruptedException {
+    private SparseArray<Object> testWriteAndRead(int[] keys) {
         AsyncKV testKV = AsyncData.newInstance().data();
         testKV.clear();
         SparseArray<Object> data = new SparseArray<>();
@@ -84,6 +86,13 @@ public class AsyncKVTest extends BaseTestCase {
         testRead(keys, data);
 
         return data;
+    }
+
+    private void testCopy(int[] keys, SparseArray data){
+        AsyncKV kva = AsyncData.newInstance().data();
+        AsyncKV kvb = AsyncDataB.newInstance().data();
+        kvb.copy(kva);
+        compare(keys, data, AsyncDataB.newInstance().data());
     }
 
     private void testRead(int[] keys, SparseArray data) {

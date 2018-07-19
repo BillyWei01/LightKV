@@ -40,12 +40,18 @@ import java.util.concurrent.Executor;
 public abstract class LightKV {
     private static final String TAG = "LightKV";
 
+    private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+
     /**
      * container size, index ref to {@link DataType}
      */
     private static final int[] CONTAINER_SIZE = {0, 5, 8, 8, 12, 12};
 
     static final int PAGE_SIZE = 4096;
+
+    public static final int ASYNC_MODE = 0;
+    public static final int SYNC_MODE = 1;
+    public final int mMode;
 
     final String mFileName;
     final LightKV.Logger mLogger;
@@ -60,10 +66,12 @@ public abstract class LightKV {
             final Class keyDefineClass,
             Executor executor,
             LightKV.Logger logger,
-            LightKV.Encoder encoder) {
+            LightKV.Encoder encoder,
+            int mode) {
         mFileName = name;
         mLogger = logger;
         mEncoder = encoder;
+        mMode = mode;
 
         if (executor == null) {
             getData(path, keyDefineClass);
@@ -114,6 +122,8 @@ public abstract class LightKV {
             throw new IllegalStateException("init " + mFileName + "failed", e);
         }
     }
+
+
 
     protected void clean(int invalidBytes) throws IOException {
         // declare for AsyncKV
@@ -198,8 +208,33 @@ public abstract class LightKV {
 
     public synchronized byte[] getArray(int key) {
         ArrayContainer container = (ArrayContainer) mData.get(key);
-        return container == null ? null : container.value;
+        return container == null ? EMPTY_BYTE_ARRAY : container.value;
     }
+
+    public abstract void putBoolean(int key, boolean value);
+
+    public abstract void putInt(int key, int value);
+
+    public abstract void putFloat(int key, float value);
+
+    public abstract void putLong(int key, long value);
+
+    public abstract void putDouble(int key, double value);
+
+    public abstract void putString(int key, String value);
+
+    public abstract void putArray(int key, byte[] value);
+
+    public abstract void remove(int key);
+
+    public abstract void clear();
+
+    /**
+     * copy from other to current
+     */
+    public abstract void copy(LightKV other);
+
+    public abstract void commit();
 
     public synchronized boolean contains(int key) {
         return mData.indexOfKey(key) >= 0;

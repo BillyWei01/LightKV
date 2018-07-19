@@ -1,6 +1,8 @@
 package com.horizon.lightkv;
 
 
+import android.util.SparseArray;
+
 import com.horizon.lightkv.Container.ArrayContainer;
 import com.horizon.lightkv.Container.BaseContainer;
 import com.horizon.lightkv.Container.BooleanContainer;
@@ -28,18 +30,15 @@ public class AsyncKV extends LightKV {
     private MappedByteBuffer mBuffer;
     private int mInvalidBytes = 0;
 
-    AsyncKV(String path,
-            String name,
-            Class keyDefineClass,
-            Executor executor,
-            Logger logger,
-            Encoder encoder) {
-        super(path, name, keyDefineClass, executor, logger, encoder);
+    AsyncKV(String path, String name, Class keyDefineClass,
+            Executor executor, Logger logger, Encoder encoder) {
+        super(path, name, keyDefineClass,
+                executor, logger, encoder, ASYNC_MODE);
     }
 
     @Override
     protected ByteBuffer loadData(String path) throws IOException {
-        File file = new File(path, mFileName+ ".kv");
+        File file = new File(path, mFileName + ".kv");
         if (!Utils.existFile(file)) {
             throw new IllegalStateException("can not open file:" + mFileName);
         }
@@ -52,13 +51,14 @@ public class AsyncKV extends LightKV {
 
     @Override
     protected void clean(int invalidBytes) throws IOException {
-        if (invalidBytes > GC_THRESHOLD) {
-            // Log.i(TAG, mFileName + " gc");
-            int fileLen = mBuffer.capacity();
-            long newLen = alignLength(fileLen - invalidBytes);
-            if (newLen != fileLen) {
-                mChannel.truncate(newLen);
-                mBuffer = mChannel.map(FileChannel.MapMode.READ_WRITE, 0, newLen);
+        if (invalidBytes > GC_THRESHOLD || invalidBytes < 0) {
+            if (invalidBytes > GC_THRESHOLD) {
+                int fileLen = mBuffer.capacity();
+                long newLen = alignLength(fileLen - invalidBytes);
+                if (newLen != fileLen) {
+                    mChannel.truncate(newLen);
+                    mBuffer = mChannel.map(FileChannel.MapMode.READ_WRITE, 0, newLen);
+                }
             }
 
             // compact
@@ -71,10 +71,6 @@ public class AsyncKV extends LightKV {
             while (mBuffer.hasRemaining()) {
                 mBuffer.put((byte) 0);
             }
-            mInvalidBytes = 0;
-        } else if (invalidBytes < 0) {
-            clear();
-            mBuffer.force();
             mInvalidBytes = 0;
         } else {
             mDataEnd = mBuffer.position();
@@ -98,6 +94,7 @@ public class AsyncKV extends LightKV {
         mBuffer.position(end);
     }
 
+    @Override
     public synchronized void putBoolean(int key, boolean value) {
         BooleanContainer container = (BooleanContainer) mData.get(key);
         if (container == null) {
@@ -113,6 +110,7 @@ public class AsyncKV extends LightKV {
         }
     }
 
+    @Override
     public synchronized void putInt(int key, int value) {
         IntContainer container = (IntContainer) mData.get(key);
         if (container == null) {
@@ -128,6 +126,7 @@ public class AsyncKV extends LightKV {
         }
     }
 
+    @Override
     public synchronized void putFloat(int key, float value) {
         FloatContainer container = (FloatContainer) mData.get(key);
         if (container == null) {
@@ -143,6 +142,7 @@ public class AsyncKV extends LightKV {
         }
     }
 
+    @Override
     public synchronized void putLong(int key, long value) {
         LongContainer container = (LongContainer) mData.get(key);
         if (container == null) {
@@ -157,6 +157,7 @@ public class AsyncKV extends LightKV {
         }
     }
 
+    @Override
     public synchronized void putDouble(int key, double value) {
         DoubleContainer container = (DoubleContainer) mData.get(key);
         if (container == null) {
@@ -177,6 +178,7 @@ public class AsyncKV extends LightKV {
      * @param key   key
      * @param value should not be null normally, it will be dealt with remove if value is null
      */
+    @Override
     public synchronized void putString(int key, String value) {
         if (value == null) {
             remove(key);
@@ -211,6 +213,7 @@ public class AsyncKV extends LightKV {
      * @param key   key
      * @param value should not be null normally, it will be dealt with remove if value is null
      */
+    @Override
     public synchronized void putArray(int key, byte[] value) {
         if (value == null) {
             remove(key);
@@ -247,6 +250,7 @@ public class AsyncKV extends LightKV {
         return end;
     }
 
+    @Override
     public synchronized void remove(int key) {
         int index = mData.indexOfKey(key);
         if (index >= 0) {
@@ -272,6 +276,7 @@ public class AsyncKV extends LightKV {
         }
     }
 
+    @Override
     public synchronized void clear() {
         int fileLen = mBuffer.capacity();
         if (fileLen != PAGE_SIZE) {
@@ -284,6 +289,10 @@ public class AsyncKV extends LightKV {
                 }
             }
         }
+        eraseData();
+    }
+
+    private void eraseData() {
         mBuffer.clear();
         while (mBuffer.hasRemaining()) {
             mBuffer.putLong(0L);
@@ -293,9 +302,50 @@ public class AsyncKV extends LightKV {
         mInvalidBytes = 0;
     }
 
+    public synchronized void copy(final LightKV other) {
+        if (other == null || this.mMode != other.mMode) {
+            return;
+        }
+        eraseData();
+
+        //noinspection SynchronizationOnLocalVariableOrMethodParameter
+        synchronized (other) {
+            if (other.mDataEnd <= 0) {
+                return;
+            }
+
+            mDataEnd = other.mDataEnd;
+
+            SparseArray<Object> data = other.mData;
+            int n = data.size();
+            for (int i = 0; i < n; i++) {
+                mData.put(data.keyAt(i), data.valueAt(i));
+            }
+
+            AsyncKV otherKV = (AsyncKV) other;
+
+            int newCapacity = otherKV.mBuffer.capacity();
+            if (newCapacity != mBuffer.capacity()) {
+                try {
+                    mChannel.truncate(newCapacity);
+                    mBuffer = mChannel.map(FileChannel.MapMode.READ_WRITE, 0, newCapacity);
+                } catch (Exception e) {
+                    if (mLogger != null) {
+                        mLogger.e(TAG, e);
+                    }
+                }
+            }
+
+            otherKV.mBuffer.position(other.mDataEnd);
+            otherKV.mBuffer.flip();
+            mBuffer.put(otherKV.mBuffer);
+        }
+    }
+
     /**
      * System will auto flush, so it's not recommended to invoke this method.
      */
+    @Override
     public synchronized void commit() {
         mBuffer.force();
     }
