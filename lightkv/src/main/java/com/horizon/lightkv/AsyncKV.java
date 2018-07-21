@@ -21,6 +21,11 @@ import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.concurrent.Executor;
 
+/**
+ * AsyncKV writes data extremely fast. <br/>
+ * Just put the data to buffer, and it will auto flush data to disk by system.<br/>
+ * With marking offset, it can write data randomly. <br/>
+ */
 public class AsyncKV extends LightKV {
     private static final String TAG = "AsyncKV";
 
@@ -302,27 +307,27 @@ public class AsyncKV extends LightKV {
         mInvalidBytes = 0;
     }
 
-    public synchronized void copy(final LightKV other) {
-        if (other == null || this.mMode != other.mMode) {
+    public synchronized void copy(final LightKV src) {
+        if (src == null || this.mMode != src.mMode) {
             return;
         }
         eraseData();
 
         //noinspection SynchronizationOnLocalVariableOrMethodParameter
-        synchronized (other) {
-            if (other.mDataEnd <= 0) {
+        synchronized (src) {
+            if (src.mDataEnd <= 0) {
                 return;
             }
 
-            mDataEnd = other.mDataEnd;
+            mDataEnd = src.mDataEnd;
 
-            SparseArray<Object> data = other.mData;
+            SparseArray<Object> data = src.mData;
             int n = data.size();
             for (int i = 0; i < n; i++) {
                 mData.put(data.keyAt(i), data.valueAt(i));
             }
 
-            AsyncKV otherKV = (AsyncKV) other;
+            AsyncKV otherKV = (AsyncKV) src;
 
             int newCapacity = otherKV.mBuffer.capacity();
             if (newCapacity != mBuffer.capacity()) {
@@ -336,7 +341,7 @@ public class AsyncKV extends LightKV {
                 }
             }
 
-            otherKV.mBuffer.position(other.mDataEnd);
+            otherKV.mBuffer.position(src.mDataEnd);
             otherKV.mBuffer.flip();
             mBuffer.put(otherKV.mBuffer);
         }

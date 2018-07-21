@@ -20,13 +20,17 @@ import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.concurrent.Executor;
 
+/**
+ * SyncKV need to commit after updating data, which like SharePreferences-commit mode.<br/>
+ * To enhance the reliability，SyncKV writes data to double files, and put checksum to the end of them.
+ */
 public class SyncKV extends LightKV {
     private static final String TAG = "SyncKV";
 
     private FileChannel mAChannel;
     private FileChannel mBChannel;
     private ByteBuffer mBuffer;
-    protected boolean invalid = false;
+    private boolean invalid = false;
 
     SyncKV(String path, String name, Class keyDefineClass,
            Executor executor, Logger logger, Encoder encoder) {
@@ -250,8 +254,8 @@ public class SyncKV extends LightKV {
         }
     }
 
-    public synchronized void copy(final LightKV other) {
-        if (other == null || this.mMode != other.mMode) {
+    public synchronized void copy(final LightKV src) {
+        if (src == null || this.mMode != src.mMode) {
             return;
         }
         if (mData.size() > 0) {
@@ -260,10 +264,10 @@ public class SyncKV extends LightKV {
         invalid = true;
 
         //noinspection SynchronizationOnLocalVariableOrMethodParameter
-        synchronized (other) {
-            mDataEnd = other.mDataEnd;
+        synchronized (src) {
+            mDataEnd = src.mDataEnd;
 
-            SparseArray<Object> data = other.mData;
+            SparseArray<Object> data = src.mData;
             int n = data.size();
             for (int i = 0; i < n; i++) {
                 mData.put(data.keyAt(i), data.valueAt(i));

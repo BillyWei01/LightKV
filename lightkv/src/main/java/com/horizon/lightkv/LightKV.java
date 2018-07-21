@@ -37,6 +37,15 @@ import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Executor;
 
+/**
+ * LightKV is a Lightweight key-value storage component. <br/>
+ * It's more efficient than SharePreferences.<br/>
+ * <br/>
+ * LightKV has two modes: SyncKV & AsyncKV <br/>
+ * SyncKV is more reliable, but it will block until data flush to disk after committing.,<br/>
+ * AsyncKV is not atomicity(no blocking when writing data), but more faster. <br/>
+ *
+ */
 public abstract class LightKV {
     private static final String TAG = "LightKV";
 
@@ -122,8 +131,6 @@ public abstract class LightKV {
             throw new IllegalStateException("init " + mFileName + "failed", e);
         }
     }
-
-
 
     protected void clean(int invalidBytes) throws IOException {
         // declare for AsyncKV
@@ -230,9 +237,9 @@ public abstract class LightKV {
     public abstract void clear();
 
     /**
-     * copy from other to current
+     * copy from src to current
      */
-    public abstract void copy(LightKV other);
+    public abstract void copy(LightKV src);
 
     public abstract void commit();
 

@@ -3,7 +3,7 @@ package com.horizon.lightkvdemo.config
 import android.os.AsyncTask
 import com.horizon.lightkv.DataType
 import com.horizon.lightkv.LightKV
-import com.horizon.lightkv.kotlin.KVModel
+import com.horizon.lightkv.KVModel
 import com.horizon.lightkvdemo.util.AppLogger
 import com.horizon.lightkvdemo.util.GzipEncoder
 

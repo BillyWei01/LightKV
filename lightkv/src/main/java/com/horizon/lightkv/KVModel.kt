@@ -1,7 +1,4 @@
-package com.horizon.lightkv.kotlin
-
-import com.horizon.lightkv.DataType
-import com.horizon.lightkv.LightKV
+package com.horizon.lightkv
 
 /**
  * Kotlin support to LightKV, make it easier to use.
@@ -30,7 +27,11 @@ abstract class KVModel {
     protected fun array(key: Int) = KVProperty<ByteArray>(key or DataType.ARRAY)
 
     /**
-     * If you need
+     * In SYNC_MODE, if you need to commit key-values in one time,
+     * it's recommend to disable auto commit,
+     * and enable it after updating data..
+     *
+     * In ASYNC_MODE, it's unnecessary to commit in manually.
      */
     fun disableAutoCommit(){
         autoCommit = false

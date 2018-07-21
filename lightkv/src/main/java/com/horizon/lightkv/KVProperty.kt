@@ -1,7 +1,5 @@
-package com.horizon.lightkv.kotlin
+package com.horizon.lightkv
 
-import com.horizon.lightkv.DataType
-import com.horizon.lightkv.LightKV
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
