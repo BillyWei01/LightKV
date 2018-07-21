@@ -4,10 +4,10 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 
-class KVProperty<T>(private val key: Int) : ReadWriteProperty<KVModel, T> {
+class KVProperty<T>(private val key: Int) : ReadWriteProperty<KVData, T> {
 
     @Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
-    override operator fun getValue(thisRef: KVModel, property: KProperty<*>): T = with(thisRef.data) {
+    override operator fun getValue(thisRef: KVData, property: KProperty<*>): T = with(thisRef.data) {
         return when (key and DataType.MASK) {
             DataType.BOOLEAN -> getBoolean(key)
             DataType.INT -> getInt(key)
@@ -20,7 +20,7 @@ class KVProperty<T>(private val key: Int) : ReadWriteProperty<KVModel, T> {
         } as T
     }
 
-    override operator fun setValue(thisRef: KVModel, property: KProperty<*>, value: T)  = with(thisRef.data) {
+    override operator fun setValue(thisRef: KVData, property: KProperty<*>, value: T)  = with(thisRef.data) {
         when (key and DataType.MASK) {
             DataType.BOOLEAN -> putBoolean(key, value as Boolean)
             DataType.INT -> putInt(key, value as Int)

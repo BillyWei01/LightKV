@@ -23,8 +23,9 @@ import java.util.concurrent.Executor;
 
 /**
  * AsyncKV writes data extremely fast. <br/>
- * Just put the data to buffer, and it will auto flush data to disk by system.<br/>
- * With marking offset, it can write data randomly. <br/>
+ * With MappedByteBuffer,we just need to put the data to buffer,
+ * it will auto flush data to disk by system.<br/>
+ * And with the record of offset, we can write data randomly. <br/>
  */
 public class AsyncKV extends LightKV {
     private static final String TAG = "AsyncKV";

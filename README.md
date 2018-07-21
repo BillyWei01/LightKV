@@ -41,7 +41,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.horizon.lightkv:lightkv:1.0.3'
+    implementation 'com.horizon.lightkv:lightkv:1.0.4'
 }
 ```
 
@@ -112,7 +112,7 @@ if(TextUtils.isEmpty(account)){
 ## Kotlin case
 ### Define
 ```kotlin
-object AppData : KVModel() {
+object AppData : KVData() {
     override fun createInstance(): LightKV {
         return LightKV.Builder(GlobalConfig.appContext, "app_data")
                 .logger(AppLogger)
@@ -137,12 +137,12 @@ if (TextUtils.isEmpty(account)) {
 ```
 
 It's more simple with Kotlin's syntactic sugar.
-Any way, LightKV is writing for improving storage efficiency, 
+Any way, LightKV is writing for improving storage efficiency,
 not matter you program with Java or Kotlin, it't worth trying.
 
 
 # MORE
-LightKV has more feature, for more infomation, 
+LightKV has more feature, for more infomation,
 see https://www.jianshu.com/p/37992580f3d5
 
 # License

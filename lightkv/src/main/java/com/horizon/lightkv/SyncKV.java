@@ -22,7 +22,8 @@ import java.util.concurrent.Executor;
 
 /**
  * SyncKV need to commit after updating data, which like SharePreferences-commit mode.<br/>
- * To enhance the reliability，SyncKV writes data to double files, and put checksum to the end of them.
+ * To enhance the reliability，
+ * SyncKV calculates the checksum of all data, and writes data to two files.
  */
 public class SyncKV extends LightKV {
     private static final String TAG = "SyncKV";

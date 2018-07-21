@@ -5,7 +5,7 @@ package com.horizon.lightkv
  * Just inherit this class, override [createInstance], and define keys.
  *
  */
-abstract class KVModel {
+abstract class KVData {
     /**
      * auto commit flag for SYNC_MODE,
      * ASYNC_MODE will flush data by kernel
