@@ -41,14 +41,14 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.horizon.lightkv:lightkv:1.0.1'
+    implementation 'com.horizon.lightkv:lightkv:1.0.3'
 }
 ```
 
 # EXAMPLE
+## Java case
 ### Define
 ```java
-
 public class AppData {
     private static final SyncKV DATA =
             new LightKV.Builder(GlobalConfig.getAppContext(), "app_data")
@@ -100,13 +100,49 @@ public class AppData {
     }
 }
 
-
 ```
-### Use case
+### Use
 ```kotlin
-val showCount = AppData.getInt(AppData.Keys.SHOW_COUNT)
-AppData.putInt(AppData.Keys.SHOW_COUNT, showCount + 1)
+val account = AppData.getString(AppData.Keys.ACCOUNT)
+if(TextUtils.isEmpty(account)){
+      AppData.putString(AppData.Keys.ACCOUNT, "foo@gmail.com")
+}
 ```
+
+## Kotlin case
+### Define
+```kotlin
+object AppData : KVModel() {
+    override fun createInstance(): LightKV {
+        return LightKV.Builder(GlobalConfig.appContext, "app_data")
+                .logger(AppLogger)
+                .executor(AsyncTask.THREAD_POOL_EXECUTOR)
+                .encoder(GzipEncoder)
+                .keys(Keys::class.java)
+                .sync()
+    }
+
+    var showCount by int(1)
+    var account by string(2 )
+    var token by string(3)
+    var secret by array(4 or DataType.ENCODE)
+}
+```
+Here we set Keys::class.java just for demo，
+it's unnecessary to define keys if we don't need to print data.
+
+### Use
+```kotlin
+val account = AppData.account
+if (TextUtils.isEmpty(account)) {
+   AppData.account = "foo@gmail.com"
+}
+```
+
+It's more simple with Kotlin's syntactic sugar.
+Any way, LightKV is writing for improving storage efficiency, 
+not matter you program with Java or Kotlin, it't worth trying.
+
 
 # MORE
 LightKV has more feature, for more infomation, 
