@@ -118,18 +118,15 @@ object AppData : KVModel() {
                 .logger(AppLogger)
                 .executor(AsyncTask.THREAD_POOL_EXECUTOR)
                 .encoder(GzipEncoder)
-                .keys(Keys::class.java)
                 .sync()
     }
 
     var showCount by int(1)
-    var account by string(2 )
+    var account by string(2)
     var token by string(3)
     var secret by array(4 or DataType.ENCODE)
 }
 ```
-Here we set Keys::class.java just for demo，
-it's unnecessary to define keys if we don't need to print data.
 
 ### Use
 ```kotlin
