@@ -1,5 +1,5 @@
 # LightKV
-![Bintray](https://img.shields.io/bintray/v/horizon757/maven/LightKV.svg)
+ [ ![Download](https://api.bintray.com/packages/horizon757/maven/LightKV/images/download.svg) ](https://bintray.com/horizon757/maven/LightKV/_latestVersion)
 
 LightKV is a Lightweight key-value storage component based on Android platform.
 
