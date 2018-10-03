@@ -3,6 +3,7 @@ package com.horizon.lightkvdemo.test;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -15,10 +16,15 @@ import com.horizon.lightkvdemo.util.Keys;
 import com.horizon.lightkvdemo.util.SyncData;
 import com.horizon.lightkvdemo.util.Utils;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.lang.reflect.Field;
 import java.util.Random;
 
-public class BenchMarkTest extends BaseTestCase {
+@RunWith(AndroidJUnit4.class)
+public class BenchMarkTest {
+    private static final String TAG = "BenchMarkTest";
     private static Random random = new Random();
 
     private long takv;
@@ -32,6 +38,7 @@ public class BenchMarkTest extends BaseTestCase {
     /**
      * just test write performance，cause they all read fast.
      */
+    @Test
     public void testSpeed() throws Exception {
         // prepare data
         Class keyDefineClass = Keys.class;

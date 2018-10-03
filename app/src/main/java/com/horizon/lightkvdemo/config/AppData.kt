@@ -9,13 +9,12 @@ import com.horizon.lightkvdemo.util.GzipEncoder
 
 
 object AppData : KVData() {
-    override fun createInstance(): LightKV {
-        return LightKV.Builder(GlobalConfig.appContext, "app_data")
+    override val data: LightKV
+        get() = LightKV.Builder(GlobalConfig.appContext, "app_data")
                 .logger(AppLogger)
                 .executor(AsyncTask.THREAD_POOL_EXECUTOR)
                 .encoder(GzipEncoder)
                 .async()
-    }
 
     var showCount by int(1)
     var account by string(2)

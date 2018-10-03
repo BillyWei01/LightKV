@@ -2,6 +2,7 @@ package com.horizon.lightkvdemo.test;
 
 
 import android.os.AsyncTask;
+import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -12,13 +13,21 @@ import com.horizon.lightkvdemo.util.SyncData;
 import com.horizon.lightkvdemo.util.SyncDataB;
 import com.horizon.lightkvdemo.util.Utils;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.lang.reflect.Field;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
-public class SyncKVTest extends BaseTestCase {
+import static org.junit.Assert.assertEquals;
+
+@RunWith(AndroidJUnit4.class)
+public class SyncKVTest {
+    private static final String TAG = "SyncKVTest";
     private static Random RANDOM = new Random();
 
+    @Test
     public void testSyncKV() throws Exception {
         Class keyDefineClass = Keys.class;
         Field[] fields = keyDefineClass.getDeclaredFields();

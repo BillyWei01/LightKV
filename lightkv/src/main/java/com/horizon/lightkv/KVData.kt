@@ -2,7 +2,6 @@ package com.horizon.lightkv
 
 /**
  * Kotlin support to LightKV, make it easier to use.
- * Just inherit this class, override [createInstance], and define keys.
  *
  */
 abstract class KVData {
@@ -12,11 +11,7 @@ abstract class KVData {
      */
     internal var autoCommit = true
 
-    abstract fun createInstance() : LightKV
-
-    val data: LightKV by lazy {
-        createInstance()
-    }
+    abstract val data: LightKV
 
     protected fun boolean(key: Int) = KVProperty<Boolean>(key or DataType.BOOLEAN)
     protected fun int(key: Int) = KVProperty<Int>(key or DataType.INT)

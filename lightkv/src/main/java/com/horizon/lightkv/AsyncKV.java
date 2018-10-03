@@ -303,6 +303,7 @@ public class AsyncKV extends LightKV {
         while (mBuffer.hasRemaining()) {
             mBuffer.putLong(0L);
         }
+        mBuffer.clear();
         mDataEnd = 0;
         mData.clear();
         mInvalidBytes = 0;
