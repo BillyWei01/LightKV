@@ -41,7 +41,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.horizon.lightkv:lightkv:1.0.6'
+    implementation 'com.horizon.lightkv:lightkv:1.0.7'
 }
 ```
 
