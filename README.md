@@ -113,12 +113,13 @@ if(TextUtils.isEmpty(account)){
 ### Define
 ```kotlin
 object AppData : KVData() {
-    override val data: LightKV
-        get() = LightKV.Builder(GlobalConfig.appContext, "app_data")
+    override val data: LightKV by lazy {
+       LightKV.Builder(GlobalConfig.appContext, "app_data")
                 .logger(AppLogger)
                 .executor(AsyncTask.THREAD_POOL_EXECUTOR)
                 .encoder(GzipEncoder)
                 .async()
+    }
 
     var showCount by int(1)
     var account by string(2)
