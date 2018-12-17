@@ -143,7 +143,7 @@ not matter you program with Java or Kotlin, it't worth trying.
 
 # MORE
 LightKV has more feature, for more information,
-see https://www.jianshu.com/p/37992580f3d5
+see https://www.jianshu.com/p/07c1b76210e6
 
 # License
 See the [LICENSE](LICENSE.md) file for license rights and limitations.
