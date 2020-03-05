@@ -116,12 +116,13 @@ if(TextUtils.isEmpty(account)){
 ### Define
 ```kotlin
 object AppData : KVData() {
-    override val data: LightKV
-        get() = LightKV.Builder(GlobalConfig.appContext, "app_data")
+    override val data: LightKV by lazy {
+       LightKV.Builder(GlobalConfig.appContext, "app_data")
                 .logger(AppLogger)
                 .executor(AsyncTask.THREAD_POOL_EXECUTOR)
                 .encoder(GzipEncoder)
                 .async()
+    }
 
     var showCount by int(1)
     var account by string(2)
@@ -140,12 +141,12 @@ if (TextUtils.isEmpty(account)) {
 
 It's more simple with Kotlin's syntactic sugar.
 Any way, LightKV is writing for improving storage efficiency,
-not matter you program with Java or Kotlin, it't worth trying.
+not matter you program with Java or Kotlin, it' worth trying.
 
 
 # MORE
 LightKV has more feature, for more information,
-see https://www.jianshu.com/p/37992580f3d5
+see https://www.jianshu.com/p/07c1b76210e6
 
 # License
 See the [LICENSE](LICENSE.md) file for license rights and limitations.
