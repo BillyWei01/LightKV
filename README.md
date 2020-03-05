@@ -141,7 +141,7 @@ if (TextUtils.isEmpty(account)) {
 
 It's more simple with Kotlin's syntactic sugar.
 Any way, LightKV is writing for improving storage efficiency,
-not matter you program with Java or Kotlin, it' worth trying.
+not matter you program with Java or Kotlin, it worth trying.
 
 
 # MORE
