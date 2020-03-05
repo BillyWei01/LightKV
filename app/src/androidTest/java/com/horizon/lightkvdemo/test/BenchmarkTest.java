@@ -23,8 +23,8 @@ import java.lang.reflect.Field;
 import java.util.Random;
 
 @RunWith(AndroidJUnit4.class)
-public class BenchMarkTest {
-    private static final String TAG = "BenchMarkTest";
+public class BenchmarkTest {
+    private static final String TAG = "BenchmarkTest";
     private static Random random = new Random();
 
     private long takv;
@@ -93,12 +93,13 @@ public class BenchMarkTest {
             tsp2 /= i;
             tspa /= i;
 
+            // tskv2 和 tsp2 无参考意义，注释掉
             String msg = "run for " + i + " times. average time,\n" +
                     "takv:" + getTime(takv) +
                     "tskv1:" + getTime(tskv1) +
-                    "tskv2:" + getTime(tskv2) +
+                    //"tskv2:" + getTime(tskv2) +
                     "tsp1:" + getTime(tsp1) +
-                    "tsp2:" + getTime(tsp2) +
+                    //"tsp2:" + getTime(tsp2) +
                     "tspa:" + getTime(tspa);
 
             Log.d(TAG, msg);

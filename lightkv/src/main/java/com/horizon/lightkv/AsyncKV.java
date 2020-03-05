@@ -1,6 +1,7 @@
 package com.horizon.lightkv;
 
 
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.horizon.lightkv.Container.ArrayContainer;
@@ -30,7 +31,17 @@ import java.util.concurrent.Executor;
 public class AsyncKV extends LightKV {
     private static final String TAG = "AsyncKV";
 
+    // After loading data, LightKV will call clean(),
+    // we want's clean the invalid bytes as soon as possible,
+    // to speed up Parser.parseData().
+    // But we don't want to rewrite all the file frequently.
+    // So we make a moderate size for GC_THRESHOLD
     private static final int GC_THRESHOLD = 1024;
+
+    // We try to not rewrite all the file,
+    // which may speed more time than just append data at the end of file.
+    // So we make a little bigger size for WRITING_GC_THRESHOLD
+    private static final int WRITING_GC_THRESHOLD = PAGE_SIZE + GC_THRESHOLD;
 
     private FileChannel mChannel;
     private MappedByteBuffer mBuffer;
@@ -57,8 +68,8 @@ public class AsyncKV extends LightKV {
 
     @Override
     protected void clean(int invalidBytes) throws IOException {
-        if (invalidBytes > GC_THRESHOLD || invalidBytes < 0) {
-            if (invalidBytes > GC_THRESHOLD) {
+        if (invalidBytes >= GC_THRESHOLD || invalidBytes < 0) {
+            if (invalidBytes >= GC_THRESHOLD) {
                 int fileLen = mBuffer.capacity();
                 long newLen = alignLength(fileLen - invalidBytes);
                 if (newLen != fileLen) {
@@ -208,6 +219,7 @@ public class AsyncKV extends LightKV {
                     mBuffer.putInt(container.offset, key | 0x80000000);
                     int offset = wrapArray(key, bytes);
                     mData.put(key, new StringContainer(offset, value, bytes));
+                    checkGC(key, container);
                 }
             }
         }
@@ -241,6 +253,7 @@ public class AsyncKV extends LightKV {
                     mBuffer.putInt(container.offset, key | 0x80000000);
                     int offset = wrapArray(key, bytes);
                     mData.put(key, new ArrayContainer(offset, value, bytes));
+                    checkGC(key, container);
                 }
             }
         }
@@ -271,7 +284,7 @@ public class AsyncKV extends LightKV {
 
     private void checkGC(int key, BaseContainer container) {
         mInvalidBytes += getContainerLength(key, container);
-        if (mInvalidBytes >= PAGE_SIZE) {
+        if (mInvalidBytes >= WRITING_GC_THRESHOLD) {
             try {
                 clean(mInvalidBytes);
             } catch (IOException e) {

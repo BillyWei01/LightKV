@@ -38,7 +38,7 @@ class MainActivity : BaseActivity() {
 
     private fun printShowTime() {
         val showCount = AppData.showCount
-        helloTv.text = getString(R.string.main_tips, showCount + 1, AppData.data.toString())
+        helloTv.text = getString(R.string.main_tips, showCount + 1)
         AppData.showCount = showCount + 1
     }
 }

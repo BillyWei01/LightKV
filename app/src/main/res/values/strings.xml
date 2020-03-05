@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">LightKV</string>
-    <string name="main_tips">MainActivity shows %d times\n%s</string>
+    <string name="main_tips">MainActivity shows %d times</string>
 </resources>

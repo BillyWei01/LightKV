@@ -17,18 +17,21 @@ AsyncKV is faster, it will auto flush data to disk by system. <br/>
 # Benchmark
 We make a simple test case (you can see the code in project) to test their loading speed and writing speed.
 
-mode |loading time(ms）
---|--
-AsyncKV | 10.46
-SyncKV | 1.56
-SharePreferences | 4.99
-
+Testing Device: Xiaomi Note 1 (run in 2018)
 mode|writing time(ms）
 --|--
 AsyncKV | 2.25
 SyncKV | 75.34
 SharePreferences-apply | 6.90
 SharePreferences-commit | 279.14
+
+Testing Device: Huawei P30 Pro (run in 2020)
+mode | writing time(ms）
+--|--
+AsyncKV | 0.31
+SyncKV | 8.31
+SharePreferences-apply | 1.9
+SharePreferences-commit | 30.81
 
 AsyncKV use mmap open mode, so it's slower when loading, but is much faster when writing. <br/>
 SyncKV and SharePreferences-commit need to flush data to disk every commit, so they use more time in whole test case. <br/>
@@ -41,7 +44,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.horizon.lightkv:lightkv:1.0.7'
+    implementation 'com.horizon.lightkv:lightkv:1.0.8'
 }
 ```
 

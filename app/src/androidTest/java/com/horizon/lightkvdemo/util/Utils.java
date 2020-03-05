@@ -5,6 +5,7 @@ import java.util.Random;
 
 public class Utils {
     private static final String[] CN = new String[]{"一", "二", "三", "四五", "六七", "八九十"};
+    private static final char[] SPECIAL_CHARACTERS = "\\．：»–，\"\"“;)r《？!！》”*-`—?:…и。；Ь、е|>с’$&#".toCharArray();
 
     private static final char[] HEX_DIGITS = {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -29,15 +30,18 @@ public class Utils {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < maxLen; i++) {
             int r = random.nextInt(Integer.MAX_VALUE);
-            int a = r % 4;
+            int a = r % 10;
             if (a == 0) {
                 builder.append(CN[r % CN.length]);
             } else if (a == 1) {
                 builder.append((char) ('0' + r % 10));
             } else if (a == 2) {
                 builder.append((char) ('a' + r % 26));
-            } else {
+            } else if(a == 3) {
                 builder.append((char) ('A' + r % 26));
+            }else {
+                r = random.nextInt(Integer.MAX_VALUE);
+                builder.append(SPECIAL_CHARACTERS[r % SPECIAL_CHARACTERS.length]);
             }
         }
         return builder.toString();
