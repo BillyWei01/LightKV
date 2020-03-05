@@ -18,6 +18,7 @@ AsyncKV is faster, it will auto flush data to disk by system. <br/>
 We make a simple test case (you can see the code in project) to test their loading speed and writing speed.
 
 Testing Device: Xiaomi Note 1 (run in 2018)
+
 mode|writing time(ms）
 --|--
 AsyncKV | 2.25
@@ -26,6 +27,7 @@ SharePreferences-apply | 6.90
 SharePreferences-commit | 279.14
 
 Testing Device: Huawei P30 Pro (run in 2020)
+
 mode | writing time(ms）
 --|--
 AsyncKV | 0.31
@@ -36,6 +38,10 @@ SharePreferences-commit | 30.81
 AsyncKV use mmap open mode, so it's slower when loading, but is much faster when writing. <br/>
 SyncKV and SharePreferences-commit need to flush data to disk every commit, so they use more time in whole test case. <br/>
 SyncKV is faster comparing with SharePreferences-commit.
+
+
+For Reading, SharePreferences use HashMap, and LightKV us SparseArray, both of them are very fast, 
+so we don't make their benchmark to compare.
 
 # Download
 ```gradle
