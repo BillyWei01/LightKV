@@ -1,5 +1,7 @@
 # LightKV
- [ ![Download](https://api.bintray.com/packages/horizon757/maven/LightKV/images/download.svg) ](https://bintray.com/horizon757/maven/LightKV/_latestVersion)
+
+**LightKV is not good enough, I wrote a beffer component recently:**
+https://github.com/BillyWei01/FastKV
 
 LightKV is a Lightweight key-value storage component based on Android platform.
 
@@ -149,10 +151,6 @@ It's more simple with Kotlin's syntactic sugar.
 Any way, LightKV is writing for improving storage efficiency,
 not matter you program with Java or Kotlin, it worth trying.
 
-
-# MORE
-LightKV has more feature, for more information,
-see https://www.jianshu.com/p/07c1b76210e6
 
 # License
 See the [LICENSE](LICENSE.md) file for license rights and limitations.
