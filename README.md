@@ -46,7 +46,7 @@ SyncKV is faster comparing with SharePreferences-commit.
 For Reading, SharePreferences use HashMap, and LightKV us SparseArray, both of them are very fast, 
 so we don't make their benchmark to compare.
 
-# Download
+# Download (No more, JCenter's public service was not available)
 ```gradle
 repositories {
     jcenter()
