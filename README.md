@@ -4,7 +4,7 @@ Note: <br/>
 **LightKV is not good enough, I wrote a beffer library recently.** <br/>
 https://github.com/BillyWei01/FastKV
 
-LightKV is a Lightweight key-value storage component based on Android platform.
+LightKV is a Lightweight key-value storage library based on Android platform.
 
 [SharedPreferences](https://developer.android.com/reference/android/content/SharedPreferences) is a convenient way to save key-value,
 but it's no very efficient.
