@@ -1,7 +1,7 @@
 # LightKV
 
 Note: <br/>
-**LightKV is not good enough, I wrote a beffer library recently.** <br/>
+**LightKV is not good enough, I wrote a better library recently.** <br/>
 https://github.com/BillyWei01/FastKV
 
 LightKV is a Lightweight key-value storage library based on Android platform.
